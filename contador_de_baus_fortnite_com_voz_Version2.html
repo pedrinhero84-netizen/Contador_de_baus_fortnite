@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>Contador de Baús • Fortnite</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#151d32;--panel2:#1d2943;--gold:#f5bd42;--muted:#aab5ca;--line:#2b3855}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#26365b 0%,#111a30 42%,var(--bg) 78%);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#fff;display:flex;justify-content:center;padding:26px 15px}
+main{width:min(100%,560px)}
+header{text-align:center;margin:12px 0 24px}
+.logo{display:inline-grid;place-items:center;width:68px;height:68px;border-radius:20px;background:linear-gradient(145deg,#ffdb72,#e78b19);font-size:35px;box-shadow:0 10px 35px #f5bd4233}
+h1{font-size:clamp(26px,6vw,36px);margin:14px 0 5px;letter-spacing:-.8px}
+.subtitle{color:var(--muted);margin:0;font-size:14px}
+.card{background:linear-gradient(160deg,#1a2540,#121a2d);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 18px 50px #0005;margin-bottom:15px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700}
+.total{text-align:center;padding:25px 10px 20px}
+.count{font-size:clamp(54px,14vw,82px);line-height:1.05;font-weight:850;letter-spacing:-3px;color:var(--gold);font-variant-numeric:tabular-nums;margin:12px 0}
+.season{display:inline-block;background:#f5bd421a;border:1px solid #f5bd4255;color:#ffdb80;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700}
+label{display:block;color:#dce4f3;font-size:14px;font-weight:650;margin-bottom:9px}
+input{width:100%;background:#0c1426;border:1px solid #3a4968;border-radius:12px;color:white;padding:14px 15px;font-size:18px;outline:none}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #f5bd4220}
+.row{display:flex;gap:10px}
+.row input{min-width:0}
+button{border:0;border-radius:12px;padding:13px 16px;font-size:15px;font-weight:750;cursor:pointer;transition:transform .08s,filter .15s}
+button:active{transform:scale(.97)}
+.primary{background:var(--gold);color:#201606;white-space:nowrap}
+.addgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}
+.addgrid button{background:var(--panel2);border:1px solid #3a4968;color:#fff;padding:16px 5px;font-size:17px}
+.addgrid button span{display:block;font-size:10px;color:#b9c4d8;font-weight:600;margin-top:3px}
+.addgrid .one{grid-column:1 / -1;justify-self:center;width: min(48%, 180px);background:#f5bd42;color:#201606;border-color:#f5bd42}
+.addgrid .one span{color:#59400f}
+.remove{display:block;width:100%;margin-top:12px;background:#39202a;border:1px solid #78434d;color:#ffb3b3}
+.remove span{font-size:12px;font-weight:600;margin-left:5px}
+.voice{width:100%;margin-top:14px;background:#233653;border:1px solid #496487;color:#e8f1ff}
+.voice.active{background:#174a39;border-color:#3b9b73;color:#c8ffe5}
+.voice-status{font-size:12px;color:var(--muted);margin:9px 2px 0;line-height:1.5}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin:13px 2px 0}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.saved{font-size:12px;color:#aab5ca;display:flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;background:#58d69a}
+.reset{background:transparent;color:#ff9b9b;border:1px solid #78434d;padding:9px 12px;font-size:12px}
+@media(max-width:390px){.card{padding:17px}.addgrid{gap:6px}.addgrid button{font-size:15px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="logo" aria-hidden="true">🧰</div>
+  <h1>Contador de Baús</h1>
+  <p class="subtitle">Acompanhe quantos baús você já abriu nesta temporada do Fortnite.</p>
+</header>
+
+<section class="card total" aria-live="polite">
+  <div class="eyebrow">Baús abertos nesta temporada</div>
+  <div class="count" id="total">0</div>
+  <div class="season">🏆 Meu progresso da temporada</div>
+</section>
+
+<section class="card">
+  <label for="initial">Adicionar a quantidade que você já abriu</label>
+  <div class="row">
+    <input id="initial" type="text" inputmode="numeric" placeholder="Ex.: 3k ou 3000" aria-label="Quantidade de baús já abertos">
+    <button class="primary" id="setInitial">Adicionar</button>
+  </div>
+  <p class="note">Você pode digitar números normais (3000) ou usar “k” (3k = 3.000). Esse valor será somado ao contador atual.</p>
+  <div style="height:1px;background:var(--line);margin:20px 0"></div>
+  <label>Adicionar mais baús</label>
+  <div class="addgrid">
+    <button class="one" data-add="1">+1<span>baú</span></button>
+    <button data-add="2">+2<span>baús</span></button>
+    <button data-add="3">+3<span>baús</span></button>
+    <button data-add="4">+4<span>baús</span></button>
+    <button data-add="5">+5<span>baús</span></button>
+  </div>
+  <button class="remove" id="removeOne">−1 <span>Retirar 1 baú</span></button>
+  <button class="voice" id="voiceButton">🎙️ Ativar comando por voz</button>
+  <p class="voice-status" id="voiceStatus">Ative o microfone e diga “mais 1”, “mais 2”, “mais 3”... ou “tirar 1”. O microfone só funciona enquanto esta página estiver aberta e o modo de voz estiver ligado.</p>
+</section>
+
+<section class="card footer">
+  <div class="saved"><span class="dot"></span><span>Salvo automaticamente neste aparelho</span></div>
+  <button class="reset" id="reset">Zerar contador</button>
+</section>
+<p class="note" style="text-align:center">Seu progresso fica salvo neste navegador. Ao abrir este site novamente no mesmo aparelho e navegador, o total continuará aqui.</p>
+</main>
+<script>
+const KEY = "fortnite_chest_counter_season";
+let total = 0;
+try { total = Math.max(0, Number(localStorage.getItem(KEY)) || 0); } catch(e) {}
+const totalEl = document.getElementById("total");
+const input = document.getElementById("initial");
+function format(n){ return new Intl.NumberFormat("pt-BR").format(n); }
+function render(){
+  totalEl.textContent = format(total);
+  try { localStorage.setItem(KEY, String(total)); } catch(e) {}
+}
+function parseAmount(raw){
+  const value = raw.trim().toLowerCase().replace(/\s/g,"").replace(",",".");
+  if(!value) return NaN;
+  const match = value.match(/^(\d+(?:\.\d+)?)(k)?$/);
+  if(!match) return NaN;
+  return Math.floor(Number(match[1]) * (match[2] ? 1000 : 1));
+}
+document.querySelectorAll("[data-add]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    total += Number(btn.dataset.add);
+    render();
+  });
+});
+document.getElementById("removeOne").addEventListener("click", () => {
+  total = Math.max(0, total - 1);
+  render();
+});
+document.getElementById("setInitial").addEventListener("click", () => {
+  const amount = parseAmount(input.value);
+  if(!Number.isSafeInteger(amount) || amount < 0){
+    alert("Digite uma quantidade válida, por exemplo 3000 ou 3k.");
+    input.focus();
+    return;
+  }
+  total += amount;
+  input.value = "";
+  render();
+});
+input.addEventListener("keydown", e => {
+  if(e.key === "Enter") document.getElementById("setInitial").click();
+});
+
+const voiceButton = document.getElementById("voiceButton");
+const voiceStatus = document.getElementById("voiceStatus");
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let listening = false;
+
+function normalizeSpeech(text) {
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+function spokenNumber(phrase) {
+  const map = {um:1, uma:1, dois:2, duas:2, tres:3, quatro:4, cinco:5,
+    seis:6, sete:7, oito:8, nove:9, dez:10, onze:11, doze:12,
+    treze:13, quatorze:14, quinze:15, dezesseis:16, dezessete:17,
+    dezoito:18, dezenove:19, vinte:20};
+  const digit = phrase.match(/\d+/);
+  if (digit) return Number(digit[0]);
+  for (const word of phrase.split(" ")) if (map[word]) return map[word];
+  return null;
+}
+function processVoiceCommand(transcript) {
+  const phrase = normalizeSpeech(transcript);
+  const number = spokenNumber(phrase);
+  if (!number || !Number.isSafeInteger(number) || number < 1) {
+    voiceStatus.textContent = 'Não entendi. Tente dizer “mais 1” ou “mais 2”.';
+    return;
+  }
+  if (/(tirar|remove|remover|menos|diminuir)/.test(phrase)) {
+    total = Math.max(0, total - number);
+    render();
+    voiceStatus.textContent = `Comando entendido: retirei ${number} baú(s).`;
+  } else if (/(mais|adicionar|adiciona|somar|soma|colocar|coloca)/.test(phrase)) {
+    total += number;
+    render();
+    voiceStatus.textContent = `Comando entendido: adicionei ${number} baú(s).`;
+  } else {
+    voiceStatus.textContent = 'Diga “mais” e a quantidade, ou “tirar” e a quantidade.';
+  }
+}
+function stopVoice() {
+  listening = false;
+  if (recognition) {
+    recognition.onend = null;
+    try { recognition.stop(); } catch(e) {}
+    recognition = null;
+  }
+  voiceButton.classList.remove("active");
+  voiceButton.textContent = "🎙️ Ativar comando por voz";
+  voiceStatus.textContent = "Microfone desligado.";
+}
+function startVoice() {
+  if (!SpeechRecognition) {
+    voiceStatus.textContent = "Seu navegador não oferece reconhecimento de voz. Tente usar o Google Chrome.";
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.lang = "pt-BR";
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.onresult = event => {
+    const result = event.results[event.results.length - 1];
+    if (result && result.isFinal) processVoiceCommand(result[0].transcript);
+  };
+  recognition.onerror = event => {
+    if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+      stopVoice();
+      voiceStatus.textContent = "Permissão do microfone negada. Libere o microfone nas permissões do navegador.";
+    } else if (event.error !== "no-speech") {
+      voiceStatus.textContent = "O reconhecimento de voz teve um problema. Tente ativar novamente.";
+    }
+  };
+  recognition.onend = () => {
+    if (listening) { try { recognition.start(); } catch(e) {} }
+  };
+  listening = true;
+  voiceButton.classList.add("active");
+  voiceButton.textContent = "🔴 Desativar microfone";
+  voiceStatus.textContent = "Microfone ligado! Fale “mais 1”, “mais 2”, “adicionar 10” ou “tirar 1”.";
+  try { recognition.start(); } catch(e) { stopVoice(); }
+}
+voiceButton.addEventListener("click", () => listening ? stopVoice() : startVoice());
+
+document.getElementById("reset").addEventListener("click", () => {
+  if(confirm("Tem certeza de que deseja zerar seu contador?")){
+    total = 0;
+    render();
+  }
+});
+render();
+</script>
+</body>
+</html>
